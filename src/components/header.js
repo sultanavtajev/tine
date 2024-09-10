@@ -1,6 +1,6 @@
 "use client";
 
-import React from 'react'
+import React from "react";
 import Link from "next/link";
 import {
   DropdownMenu,
@@ -10,100 +10,109 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { Button } from "@/components/ui/button";
 
-export default function Header () {
-    return (
-      <header className="px-4 lg:px-6 h-14 flex items-center">
-        <Link
-          href="/"
-          className="flex items-center justify-center"
-          prefetch={false}
-        >
-          <CameraIcon className="h-6 w-6" />
-          <span className="sr-only">Nexttemplate</span>
-        </Link>
-        <div className="ml-auto flex items-center gap-4 sm:gap-6">
-          <DropdownMenu>
-            <DropdownMenuTrigger asChild>
-              <Button
-                variant="ghost"
-                size="icon"
-                className="w-8 h-8 rounded-full sm:hidden"
+export default function Header() {
+  return (
+    <header className="px-4 lg:px-6 h-14 flex items-center">
+      <h1 className="text-2xl font-bold">TINE Case</h1> {/* New heading */}
+      <div className="ml-auto flex items-center gap-4 sm:gap-6">
+        <DropdownMenu>
+          <DropdownMenuTrigger asChild>
+            <Button
+              variant="ghost"
+              size="icon"
+              className="w-8 h-8 rounded-full sm:hidden"
+            >
+              <MenuIcon className="h-5 w-5" />
+            </Button>
+          </DropdownMenuTrigger>
+          <DropdownMenuContent align="end" className="w-48">
+            <DropdownMenuItem>
+              <Link
+                href="#"
+                className="text-sm font-medium hover:underline underline-offset-4"
+                prefetch={false}
               >
-                <MenuIcon className="h-5 w-5" />
-              </Button>
-            </DropdownMenuTrigger>
-            <DropdownMenuContent align="end" className="w-48">
-              <DropdownMenuItem>
-                <Link
-                  href="#"
-                  className="text-sm font-medium hover:underline underline-offset-4"
-                  prefetch={false}
-                >
-                  Dokumentasjon
-                </Link>
-              </DropdownMenuItem>
-              <DropdownMenuItem>
-                <Link
-                  href="#"
-                  className="text-sm font-medium hover:underline underline-offset-4"
-                  prefetch={false}
-                >
-                  Priser
-                </Link>
-              </DropdownMenuItem>
-              <DropdownMenuItem>
-                <Link
-                  href="#"
-                  className="text-sm font-medium hover:underline underline-offset-4"
-                  prefetch={false}
-                >
-                  Om oss
-                </Link>
-              </DropdownMenuItem>
-              <DropdownMenuItem>
-                <Link
-                  href="#"
-                  className="text-sm font-medium hover:underline underline-offset-4"
-                  prefetch={false}
-                >
-                  Kontakt
-                </Link>
-              </DropdownMenuItem>
-            </DropdownMenuContent>
-          </DropdownMenu>
-          <nav className="hidden sm:flex gap-4 sm:gap-6">
-            <Link
-              href="#"
-              className="text-sm font-medium hover:underline underline-offset-4"
-              prefetch={false}
-            >
-              Dokumentasjon
-            </Link>
-            <Link
-              href="#"
-              className="text-sm font-medium hover:underline underline-offset-4"
-              prefetch={false}
-            >
-              Priser
-            </Link>
-            <Link
-              href="#"
-              className="text-sm font-medium hover:underline underline-offset-4"
-              prefetch={false}
-            >
-              Om oss
-            </Link>
-            <Link
-              href="#"
-              className="text-sm font-medium hover:underline underline-offset-4"
-              prefetch={false}
-            >
-              Kontakt
-            </Link>
-          </nav>
-        </div>
-      </header>
-    );
+                Produsenter
+              </Link>
+            </DropdownMenuItem>
+            <DropdownMenuItem>
+              <Link
+                href="#"
+                className="text-sm font-medium hover:underline underline-offset-4"
+                prefetch={false}
+              >
+                Leveranser
+              </Link>
+            </DropdownMenuItem>
+            <DropdownMenuItem>
+              <Link
+                href="#"
+                className="text-sm font-medium hover:underline underline-offset-4"
+                prefetch={false}
+              >
+                Kriterier
+              </Link>
+            </DropdownMenuItem>
+            <DropdownMenuItem>
+              <Link
+                href="#"
+                className="text-sm font-medium hover:underline underline-offset-4"
+                prefetch={false}
+              >
+                Oppfylte kriterier
+              </Link>
+            </DropdownMenuItem>
+            <DropdownMenuItem>
+              <Link
+                href="#"
+                className="text-sm font-medium hover:underline underline-offset-4"
+                prefetch={false}
+              >
+                Bærekraftstillegg
+              </Link>
+            </DropdownMenuItem>
+          </DropdownMenuContent>
+        </DropdownMenu>
+        <nav className="hidden sm:flex gap-4 sm:gap-6">
+          <Link
+            href="#"
+            className="text-sm font-medium hover:underline underline-offset-4"
+            prefetch={false}
+          >
+            Produsenter
+          </Link>
+          <Link
+            href="#"
+            className="text-sm font-medium hover:underline underline-offset-4"
+            prefetch={false}
+          >
+            Leveranser
+          </Link>
+          <Link
+            href="#"
+            className="text-sm font-medium hover:underline underline-offset-4"
+            prefetch={false}
+          >
+            Kriterier
+          </Link>
+          <Link
+            href="#"
+            className="text-sm font-medium hover:underline underline-offset-4"
+            prefetch={false}
+          >
+            Oppfylte kriterier
+          </Link>
+          <Link
+            href="#"
+            className="text-sm font-medium hover:underline underline-offset-4"
+            prefetch={false}
+          >
+            Bærekraftstillegg
+          </Link>
+        </nav>
+      </div>
+    </header>
+  );
 }
 
 function CameraIcon(props) {

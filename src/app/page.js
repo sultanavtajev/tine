@@ -1,44 +1,130 @@
 "use client";
 
+import Link from "next/link"; // Importer Link fra Next.js for navigasjon
+import { useState } from "react";
 import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import Image from "next/image";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from "@/components/ui/table";
+import { Loader2 } from "lucide-react";
 
-export default function Component() {
+export default function Home() {
+  const [data, setData] = useState(null);
+  const [error, setError] = useState(null);
+  const [loading, setLoading] = useState(false);
+  const [activeEndpoint, setActiveEndpoint] = useState(null);
+
+  const fetchData = async (apiEndpoint) => {
+    setLoading(true);
+    setError(null);
+    setActiveEndpoint(apiEndpoint);
+
+    try {
+      const res = await fetch(apiEndpoint);
+      if (!res.ok) throw new Error("Nettverksrespons var ikke ok");
+      const result = await res.json();
+      setData(result);
+    } catch (err) {
+      setError("Feil under henting av data: " + err.message);
+      setData(null);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const endpoints = [
+    { name: "Produsenter", endpoint: "/api/produsenter" },
+    { name: "Leveranser", endpoint: "/api/leveranser" },
+    { name: "Kriterier", endpoint: "/api/kriterier" },
+    { name: "Oppfylte kriterier", endpoint: "/api/produsent_kriterier" },
+    { name: "Bærekraftstillegg", endpoint: "/api/baerekraftstillegg" },
+  ];
+
+  const renderTable = (data) => {
+    if (!Array.isArray(data) || data.length === 0) {
+      return <p>Ingen data å vise</p>;
+    }
+
+    const headers = Object.keys(data[0]);
+
+    return (
+      <Table>
+        <TableHeader>
+          <TableRow>
+            {headers.map((header) => (
+              <TableHead key={header}>{header}</TableHead>
+            ))}
+          </TableRow>
+        </TableHeader>
+        <TableBody>
+          {data.map((row, index) => (
+            <TableRow key={index}>
+              {headers.map((header) =>
+                header === "id" ? (
+                  <TableCell key={header}>
+                    {/* Gjør produsentene til linker */}
+                    <Link href={`/produsenter/${row[header]}`} className="text-blue-500 underline">{row[header]}
+                    </Link>
+                  </TableCell>
+                ) : (
+                  <TableCell key={header}>
+                    {JSON.stringify(row[header])}
+                  </TableCell>
+                )
+              )}
+            </TableRow>
+          ))}
+        </TableBody>
+      </Table>
+    );
+  };
+
   return (
-    <main className="flex-1">
-      <section className="w-full py-12">
-        <div className="container px-4 md:px-6">
-          <div className="grid gap-6 lg:grid-cols-[1fr_400px] lg:gap-12 xl:grid-cols-[1fr_600px]">
-            <div className="flex flex-col justify-center space-y-4">
-              <div className="space-y-2">
-                <h1 className="text-3xl font-bold tracking-tighter sm:text-5xl xl:text-6xl/none">
-                  Nexttemplate er en Next.js mal
-                </h1>
-                <p className="max-w-[600px] text-muted-foreground md:text-xl">
-                  Dette er en startmal for Next.js med Tailwind CSS,
-                  PostCSS og TypeScript.
-                </p>
-              </div>
-              <div className="flex flex-col gap-2 min-[400px]:flex-row">
-                <div className="flex w-full max-w-sm items-center space-x-2">
-                  <Input type="text" placeholder="nexttemplate" />
-                  <Button type="submit">Test</Button>
-                </div>
-              </div>
+    <div className="container mx-auto py-8 space-y-6">
+      <h1 className="text-3xl font-bold">Hent data fra ulike tabeller</h1>
+
+      <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-4">
+        {endpoints.map(({ name, endpoint }) => (
+          <Button
+            key={endpoint}
+            onClick={() => fetchData(endpoint)}
+            variant={activeEndpoint === endpoint ? "default" : "outline"}
+            className="w-full"
+          >
+            {name}
+          </Button>
+        ))}
+      </div>
+
+      <Card>
+        <CardHeader>
+          <CardTitle>Resultat</CardTitle>
+        </CardHeader>
+        <CardContent>
+          {loading && (
+            <div className="flex items-center justify-center p-4">
+              <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+              Laster data...
             </div>
-            <Image
-              src="/images/image1.jpg"
-              width="550"
-              height="550"
-              alt="Hero"
-              className="mx-auto aspect-video overflow-hidden rounded-xl object-cover sm:w-full lg:order-last lg:aspect-square"
-              priority
-            />
-          </div>
-        </div>
-      </section>
-    </main>
+          )}
+
+          {error && <div className="text-red-500 p-4">{error}</div>}
+
+          {data && <div className="overflow-x-auto">{renderTable(data)}</div>}
+
+          {!loading && !error && !data && (
+            <div className="text-muted-foreground p-4">
+              Velg en knapp ovenfor for å hente data.
+            </div>
+          )}
+        </CardContent>
+      </Card>
+    </div>
   );
 }
-
