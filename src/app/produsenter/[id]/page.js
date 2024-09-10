@@ -20,6 +20,7 @@ export default function ProdusentData({ params }) {
 
   useEffect(() => {
     const fetchData = async () => {
+      console.log(`Fetching data for produsent ID: ${id}`);
       setLoading(true);
       try {
         const [leveranserRes, kriterierRes, tilleggRes] = await Promise.all([
@@ -28,12 +29,21 @@ export default function ProdusentData({ params }) {
           fetch(`/api/baerekraftstillegg?produsent_id=${id}`),
         ]);
 
+        console.log("Leveranser response:", leveranserRes);
+        console.log("Kriterier response:", kriterierRes);
+        console.log("Bærekraftstillegg response:", tilleggRes);
+
         const leveranser = await leveranserRes.json();
         const kriterier = await kriterierRes.json();
         const tillegg = await tilleggRes.json();
 
+        console.log("Leveranser data:", leveranser);
+        console.log("Kriterier data:", kriterier);
+        console.log("Bærekraftstillegg data:", tillegg);
+
         setData({ leveranser, kriterier, tillegg });
       } catch (err) {
+        console.error("Error fetching data:", err.message);
         setError("Feil under henting av data: " + err.message);
       } finally {
         setLoading(false);
@@ -42,10 +52,13 @@ export default function ProdusentData({ params }) {
 
     if (id) {
       fetchData();
+    } else {
+      console.error("Produsent ID mangler i URL params.");
     }
   }, [id]);
 
   if (loading) {
+    console.log("Loading data...");
     return (
       <div className="flex items-center justify-center p-4">
         <Loader2 className="mr-2 h-4 w-4 animate-spin" />
@@ -55,11 +68,13 @@ export default function ProdusentData({ params }) {
   }
 
   if (error) {
+    console.error("Error encountered:", error);
     return <div className="text-red-500 p-4">{error}</div>;
   }
 
   const renderTable = (title, dataArray) => {
     if (!Array.isArray(dataArray) || dataArray.length === 0) {
+      console.log(`No data available for ${title}`);
       return (
         <div>
           <h2 className="text-xl font-bold mb-2">{title}</h2>
@@ -67,6 +82,8 @@ export default function ProdusentData({ params }) {
         </div>
       );
     }
+
+    console.log(`Rendering table for ${title}:`, dataArray);
 
     return (
       <div>
@@ -83,7 +100,25 @@ export default function ProdusentData({ params }) {
             {dataArray.map((item, index) => (
               <TableRow key={index}>
                 {Object.values(item).map((value, valueIndex) => (
-                  <TableCell key={valueIndex}>{value}</TableCell>
+                  <TableCell key={valueIndex}>
+                    {typeof value === "object" && value !== null ? (
+                      Array.isArray(value) ? (
+                        <ul>
+                          {value.map((val, idx) => (
+                            <li key={idx}>{JSON.stringify(val)}</li>
+                          ))}
+                        </ul>
+                      ) : (
+                        Object.entries(value).map(([k, v]) => (
+                          <div key={k}>
+                            <strong>{k}:</strong> {v}
+                          </div>
+                        ))
+                      )
+                    ) : (
+                      value
+                    )}
+                  </TableCell>
                 ))}
               </TableRow>
             ))}

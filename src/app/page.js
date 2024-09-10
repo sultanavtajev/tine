@@ -65,19 +65,61 @@ export default function Home() {
         <TableBody>
           {data.map((row, index) => (
             <TableRow key={index}>
-              {headers.map((header) =>
-                header === "id" ? (
-                  <TableCell key={header}>
-                    {/* Gjør produsentene til linker */}
-                    <Link href={`/produsenter/${row[header]}`} className="text-blue-500 underline">{row[header]}
-                    </Link>
-                  </TableCell>
-                ) : (
-                  <TableCell key={header}>
-                    {JSON.stringify(row[header])}
-                  </TableCell>
-                )
-              )}
+              {headers.map((header) => {
+                const cellData = row[header];
+
+                // Sjekk om kolonnen er 'id' for å rendre Link for produsenten
+                if (header === "id") {
+                  return (
+                    <TableCell key={header}>
+                      <Link
+                        href={`/produsenter/${cellData}`}
+                        className="text-blue-500 underline"
+                      >
+                        {cellData}
+                      </Link>
+                    </TableCell>
+                  );
+                }
+
+                // Sjekk om cellData er en array (som 'result'), og rendrer hver verdi
+                if (Array.isArray(cellData)) {
+                  return (
+                    <TableCell key={header}>
+                      {cellData.map((resultItem, resultIndex) => (
+                        <div key={resultIndex}>
+                          <strong>Måned:</strong> {resultItem.month} <br />
+                          <strong>Oppfylte kriterier:</strong>{" "}
+                          {resultItem.oppfylteKriterier} <br />
+                          <strong>Tillegg per liter:</strong>{" "}
+                          {resultItem.tilleggPerLiter} øre <br />
+                          <strong>Total tillegg:</strong>{" "}
+                          {resultItem.totalTillegg} kr <br />
+                          <hr />
+                        </div>
+                      ))}
+                    </TableCell>
+                  );
+                }
+
+                // Hvis cellen inneholder et objekt, itererer vi over nøkkel-verdi-parene
+                if (typeof cellData === "object" && cellData !== null) {
+                  return (
+                    <TableCell key={header}>
+                      <ul>
+                        {Object.entries(cellData).map(([key, value]) => (
+                          <li key={key}>
+                            <strong>{key}:</strong> {String(value)}
+                          </li>
+                        ))}
+                      </ul>
+                    </TableCell>
+                  );
+                }
+
+                // Hvis cellData ikke er et objekt eller en array, rendrer vi verdien direkte
+                return <TableCell key={header}>{String(cellData)}</TableCell>;
+              })}
             </TableRow>
           ))}
         </TableBody>
